@@ -1,15 +1,15 @@
-// email.js
+/ email.js
 require('dotenv').config(); // load all environment variables
 
 const sgMail = require('@sendgrid/mail');
 
-// Check API key safely
+// Check API key
 if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_API_KEY.startsWith('SG.')) {
-  console.warn('⚠️ Warning: Invalid or missing SendGrid API key. Email functionality will be disabled.');
-  console.warn('Make sure SENDGRID_API_KEY is set and starts with "SG."');
-} else {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.error('❌ Invalid SendGrid API key. Make sure it starts with "SG."');
+  process.exit(1);
 }
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
  * sendEmail - send an email using SendGrid
@@ -19,17 +19,6 @@ if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_API_KEY.startsWith('S
  * @param {boolean} eu - send with EU Data Residency
  */
 async function sendEmail(to, subject, html, eu = false) {
-  // Check if SendGrid is properly configured
-  if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_API_KEY.startsWith('SG.')) {
-    console.warn('⚠️ SendGrid not configured. Email not sent to:', to);
-    return { success: false, message: 'SendGrid not configured' };
-  }
-
-  if (!process.env.EMAIL_USER) {
-    console.warn('⚠️ EMAIL_USER not configured. Email not sent to:', to);
-    return { success: false, message: 'EMAIL_USER not configured' };
-  }
-
   const msg = {
     to,
     from: process.env.EMAIL_USER, // Must be a verified sender in SendGrid
@@ -45,9 +34,10 @@ async function sendEmail(to, subject, html, eu = false) {
     return response;
   } catch (err) {
     console.error('❌ SendGrid error:', err.response ? err.response.body : err.message);
-    // Don't throw error, just log it and return a failure response
-    return { success: false, error: err.message };
+    throw err;
   }
 }
 
 module.exports = sendEmail;
+
+
