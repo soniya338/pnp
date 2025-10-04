@@ -1,0 +1,33 @@
+{
+  "name": "pop-n-plan",
+  "version": "1.0.0",
+  "description": "POP N' PLAN - College Committee & Event Management Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "echo 'No build step required for this project'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["college", "committee", "events", "management", "student"],
+  "author": "Soniya Yadav",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.0",
+    "nodemailer": "^7.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

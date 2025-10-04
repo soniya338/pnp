@@ -1,0 +1,1099 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Member Dashboard - POP N' PLAN</title>
+  <link rel="icon" href="logo.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Saira:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6c5ce7;
+      --secondary: #ff6ec4;
+      --accent: #74b9ff;
+      --success: #00b894;
+      --warning: #fdcb6e;
+      --danger: #e17055;
+      --dark: #2d3436;
+      --light: #f8f9fa;
+      --white: #ffffff;
+      --gray: #636e72;
+      --light-gray: #ddd;
+      --shadow: 0 4px 20px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.15);
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Saira', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: var(--dark);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 280px 1fr 320px;
+      gap: 20px;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      grid-column: 1 / -1;
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 15px 25px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 300px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 45px 12px 15px;
+      border: 2px solid var(--light-gray);
+      border-radius: 25px;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .search-box .material-icons {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+    }
+
+    .notifications {
+      position: relative;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .notifications:hover {
+      background: var(--light);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      padding: 8px 15px;
+      border-radius: 25px;
+      transition: var(--transition);
+    }
+
+    .user-profile:hover {
+      background: var(--light);
+    }
+
+    .user-profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+    }
+
+    .user-info h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .user-info p {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .profile-card {
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      border: 4px solid var(--primary);
+    }
+
+    .profile-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .profile-role {
+      color: var(--gray);
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .nav-menu {
+      list-style: none;
+    }
+
+    .nav-item {
+      margin-bottom: 8px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--dark);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .nav-link .material-icons {
+      font-size: 20px;
+    }
+
+    /* Main Content */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .content-tabs {
+      display: flex;
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 5px;
+      box-shadow: var(--shadow);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px 20px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 600;
+    }
+
+    .tab.active {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Post Composer */
+    .post-composer {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .composer-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .composer-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    .composer-input {
+      flex: 1;
+      padding: 15px 20px;
+      border: 2px solid var(--light-gray);
+      border-radius: 25px;
+      font-size: 16px;
+      resize: none;
+      min-height: 50px;
+      max-height: 120px;
+    }
+
+    .composer-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .composer-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .media-options {
+      display: flex;
+      gap: 15px;
+    }
+
+    .media-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 15px;
+      border: 2px solid var(--light-gray);
+      border-radius: 20px;
+      background: transparent;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .media-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .post-btn {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .post-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    /* Feed */
+    .feed {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .post {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 20px;
+    }
+
+    .post-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    .post-info h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .post-info p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .post-content {
+      padding: 0 20px 20px;
+    }
+
+    .post-text {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .post-image {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .post-actions {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px 20px;
+      border-top: 1px solid var(--light-gray);
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 15px;
+      border: none;
+      background: transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--gray);
+    }
+
+    .action-btn:hover {
+      background: var(--light);
+      color: var(--primary);
+    }
+
+    .action-btn.liked {
+      color: var(--danger);
+    }
+
+    /* Events Section */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .event-card {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .event-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .event-content {
+      padding: 20px;
+    }
+
+    .event-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .event-date {
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .event-description {
+      color: var(--gray);
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .event-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Right Sidebar */
+    .right-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Messages */
+    .messages-container {
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .messages-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--light-gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .messages-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .message-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .message-item:hover {
+      background: var(--light);
+    }
+
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .message-info h5 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .message-preview {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .message-time {
+      font-size: 11px;
+      color: var(--gray);
+      margin-left: auto;
+    }
+
+    .message-input {
+      display: flex;
+      padding: 15px;
+      border-top: 1px solid var(--light-gray);
+    }
+
+    .message-input input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 2px solid var(--light-gray);
+      border-radius: 20px;
+      outline: none;
+    }
+
+    .message-input button {
+      margin-left: 10px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .sidebar,
+      .right-sidebar {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+      
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <img src="logo.png" alt="POP N' PLAN Logo">
+        <h1>POP N' PLAN</h1>
+      </div>
+      <div class="header-right">
+        <div class="search-box">
+          <input type="text" placeholder="Search posts, events, members...">
+          <span class="material-icons">search</span>
+        </div>
+        <div class="notifications">
+          <span class="material-icons">notifications</span>
+          <div class="notification-badge" id="notification-count">3</div>
+        </div>
+        <div class="user-profile" id="user-profile">
+          <img id="user-avatar" src="https://i.pravatar.cc/150?img=1" alt="User Avatar">
+          <div class="user-info">
+            <h3 id="user-name">Shweta Jha</h3>
+            <p id="user-role">Literary Club Member</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <!-- Profile Card -->
+      <div class="card profile-card">
+        <img id="profile-avatar" src="https://i.pravatar.cc/150?img=1" alt="Profile" class="profile-avatar">
+        <div class="profile-name" id="profile-name">Shweta Jha</div>
+        <div class="profile-role" id="profile-role">Literary Club Member</div>
+        <div class="profile-stats">
+          <div class="stat">
+            <div class="stat-number" id="posts-count">12</div>
+            <div class="stat-label">Posts</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number" id="events-count">5</div>
+            <div class="stat-label">Events</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="edit-profile-btn">Edit Profile</button>
+      </div>
+
+      <!-- Navigation Menu -->
+      <div class="card">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="#" class="nav-link active" data-tab="feed">
+              <span class="material-icons">home</span>
+              Home Feed
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-tab="events">
+              <span class="material-icons">event</span>
+              Upcoming Events
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-tab="achievements">
+              <span class="material-icons">emoji_events</span>
+              Achievements
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-tab="committees">
+              <span class="material-icons">groups</span>
+              Committees
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-tab="messages">
+              <span class="material-icons">message</span>
+              Messages
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Content Tabs -->
+      <div class="content-tabs">
+        <div class="tab active" data-tab="feed">Feed</div>
+        <div class="tab" data-tab="events">Events</div>
+        <div class="tab" data-tab="achievements">Achievements</div>
+        <div class="tab" data-tab="committees">Committees</div>
+        <div class="tab" data-tab="messages">Messages</div>
+      </div>
+
+      <!-- Feed Tab Content -->
+      <div class="tab-content active" id="feed-content">
+        <!-- Post Composer -->
+        <div class="post-composer">
+          <div class="composer-header">
+            <img id="composer-avatar" src="https://i.pravatar.cc/150?img=1" alt="Avatar" class="composer-avatar">
+            <textarea class="composer-input" id="post-input" placeholder="What's on your mind? Share your committee's achievements..."></textarea>
+          </div>
+          <div class="composer-options">
+            <div class="media-options">
+              <button class="media-btn" id="add-image">
+                <span class="material-icons">image</span>
+                Photo
+              </button>
+              <button class="media-btn" id="add-emoji">
+                <span class="material-icons">emoji_emotions</span>
+                Feeling
+              </button>
+              <button class="media-btn" id="add-location">
+                <span class="material-icons">location_on</span>
+                Location
+              </button>
+            </div>
+            <button class="post-btn" id="publish-post">Post</button>
+          </div>
+        </div>
+
+        <!-- Feed -->
+        <div class="feed" id="posts-feed">
+          <!-- Posts will be dynamically loaded here -->
+        </div>
+      </div>
+
+      <!-- Events Tab Content -->
+      <div class="tab-content" id="events-content">
+        <div class="events-grid" id="events-grid">
+          <!-- Events will be dynamically loaded here -->
+        </div>
+      </div>
+
+      <!-- Achievements Tab Content -->
+      <div class="tab-content" id="achievements-content">
+        <div class="feed" id="achievements-feed">
+          <!-- Achievements will be dynamically loaded here -->
+        </div>
+      </div>
+
+      <!-- Committees Tab Content -->
+      <div class="tab-content" id="committees-content">
+        <div class="events-grid" id="committees-grid">
+          <!-- Committees will be dynamically loaded here -->
+        </div>
+      </div>
+
+      <!-- Messages Tab Content -->
+      <div class="tab-content" id="messages-content">
+        <div class="messages-container">
+          <div class="messages-header">
+            <h3>Messages</h3>
+            <button class="btn btn-primary" id="new-message">New Message</button>
+          </div>
+          <div class="messages-list" id="messages-list">
+            <!-- Messages will be dynamically loaded here -->
+          </div>
+          <div class="message-input">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button id="send-message">
+              <span class="material-icons">send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="right-sidebar">
+      <!-- Quick Actions -->
+      <div class="card">
+        <h3 style="margin-bottom: 15px;">Quick Actions</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button class="btn btn-primary" id="create-event">Create Event</button>
+          <button class="btn btn-outline" id="join-committee">Join Committee</button>
+          <button class="btn btn-outline" id="view-profile">View Profile</button>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card">
+        <h3 style="margin-bottom: 15px;">Recent Activity</h3>
+        <div id="recent-activity">
+          <!-- Recent activity will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Online Members -->
+      <div class="card">
+        <h3 style="margin-bottom: 15px;">Online Members</h3>
+        <div id="online-members">
+          <!-- Online members will be loaded here -->
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    /* ---------- Simple localStorage-backed demo of full functionality ----------
+       - currentUser object stored at 'pn_user'
+       - posts array stored at 'pn_posts'
+       - committees stored at 'pn_committees'
+       - chat per-committee at 'pn_chat_<id>'
+    ---------------------------------------------------------------------------*/
+
+    // Seed data if missing
+    const seed = () => {
+      if(!localStorage.getItem('pn_user')){
+        localStorage.setItem('pn_user', JSON.stringify({name:'Shweta Jha', club:'Literary Club', avatar:'avatar.png'}));
+      }
+      if(!localStorage.getItem('pn_committees')){
+        const c = [
+          {id:'cultural', name:'Cultural Committee'},
+          {id:'sports', name:'Sports Committee'},
+          {id:'tech', name:'Tech Committee'},
+          {id:'literary', name:'Literary Committee'}
+        ];
+        localStorage.setItem('pn_committees', JSON.stringify(c));
+      }
+      if(!localStorage.getItem('pn_clubs')){
+        const clubs = ['Literary Club','Music Club','Tech Club','Dance Club','Drama Club','Photography Club'];
+        localStorage.setItem('pn_clubs', JSON.stringify(clubs));
+      }
+      if(!localStorage.getItem('pn_posts')) localStorage.setItem('pn_posts', JSON.stringify([]));
+    }
+
+    seed();
+
+    // helpers
+    const $ = (sel,root=document)=> root.querySelector(sel);
+    const $$ = (sel,root=document)=> Array.from(root.querySelectorAll(sel));
+
+    const user = JSON.parse(localStorage.getItem('pn_user'));
+    const committees = JSON.parse(localStorage.getItem('pn_committees'));
+    const clubs = JSON.parse(localStorage.getItem('pn_clubs'));
+
+    // render profile
+    $('#me-name').textContent = user.name;
+    $('#me-club').textContent = user.club;
+    $('#side-name').textContent = user.name;
+    $('#side-role').textContent = 'Member — ' + user.club;
+
+    // populate clubs select
+    const asClub = $('#as-club');
+    clubs.forEach(c=>{
+      const opt = document.createElement('option'); opt.value=c; opt.textContent=c; if(c===user.club) opt.selected=true; asClub.appendChild(opt)
+    });
+
+    // emoji picker small set
+    const emojiList = ['🎉','🏆','👏','❤️','🔥','✨','📸','🎶','💡','🤝'];
+    const emojiPicker = $('#emoji-picker');
+    emojiList.forEach(e=>{
+      const b = document.createElement('button'); b.className='emoji'; b.type='button'; b.textContent=e; b.title=e; b.addEventListener('click', ()=>{
+        // insert into header input at cursor
+        const h = $('#header-input');
+        const start = h.selectionStart || 0; const end = h.selectionEnd || 0;
+        h.value = h.value.slice(0,start) + e + h.value.slice(end);
+        h.focus();
+        h.selectionStart = start + e.length; h.selectionEnd = start + e.length;
+      });
+      emojiPicker.appendChild(b);
+    });
+
+    // render committees list with join buttons
+    const commList = $('#comm-list');
+    const joinedKey = 'pn_joined';
+    let joined = JSON.parse(localStorage.getItem(joinedKey) || '[]');
+
+    function renderCommittees(){
+      commList.innerHTML='';
+      committees.forEach(c=>{
+        const el = document.createElement('div'); el.className='committee';
+        el.innerHTML = `<div><strong>${c.name}</strong><div class="small">ID: ${c.id}</div></div>`;
+        const btn = document.createElement('button'); btn.textContent = joined.includes(c.id) ? 'Leave' : 'Join'; btn.className='btn';
+        btn.addEventListener('click', ()=>{
+          if(joined.includes(c.id)){
+            joined = joined.filter(x=>x!==c.id);
+          } else {
+            joined.push(c.id);
+          }
+          localStorage.setItem(joinedKey, JSON.stringify(joined));
+          renderCommittees();
+          updateCollabRoom();
+        });
+        el.appendChild(btn);
+        commList.appendChild(el);
+      });
+      // quick-join area
+      const q = $('#quick-join'); q.innerHTML='';
+      committees.forEach(c=>{
+        const b = document.createElement('button'); b.textContent = (joined.includes(c.id)?'Joined ':'Join ') + c.name;
+        b.addEventListener('click', ()=>{ if(!joined.includes(c.id)){ joined.push(c.id); localStorage.setItem(joinedKey, JSON.stringify(joined)); renderCommittees(); updateCollabRoom(); } });
+        q.appendChild(b);
+      });
+    }
+
+    renderCommittees();
+
+    // posts
+    const feed = $('#feed');
+    function loadPosts(){
+      const posts = JSON.parse(localStorage.getItem('pn_posts') || '[]');
+      feed.innerHTML = '';
+      posts.slice().reverse().forEach(p=>{
+        const div = document.createElement('div'); div.className='post';
+        const whoLine = document.createElement('div'); whoLine.className='header';
+        const who = document.createElement('div'); who.className='who'; who.textContent = `${p.userName} from ${p.asClub} ${p.header}`;
+        const sub = document.createElement('div'); sub.className='sub'; sub.textContent = `${new Date(p.created).toLocaleString()}`;
+        whoLine.appendChild(who); whoLine.appendChild(sub);
+        div.appendChild(whoLine);
+        const content = document.createElement('div'); content.className='content'; content.textContent = p.text || '';
+        if(p.image) { const img = document.createElement('img'); img.src=p.image; img.style.maxWidth='100%'; img.style.borderRadius='8px'; img.style.marginTop='8px'; content.appendChild(img); }
+        div.appendChild(content);
+        const meta = document.createElement('div'); meta.className='meta';
+        meta.innerHTML = `<span>${p.visibility === 'public' ? 'Public' : 'Club-only'}</span><span>${p.likes || 0} Likes</span>`;
+        div.appendChild(meta);
+        feed.appendChild(div);
+      });
+    }
+
+    loadPosts();
+
+    // publishing
+    $('#publish').addEventListener('click', ()=>{
+      const header = $('#header-input').value.trim();
+      const text = $('#post-text').value.trim();
+      const asClubVal = $('#as-club').value;
+      const visibility = $('#post-public').checked ? 'public' : 'club';
+      if(!header && !text){ alert('Please write a header or some text.'); return; }
+      const posts = JSON.parse(localStorage.getItem('pn_posts')||'[]');
+      posts.push({id:Date.now(), userName:user.name, asClub:asClubVal, header:header, text:text, created:Date.now(), visibility:visibility, likes:0});
+      localStorage.setItem('pn_posts', JSON.stringify(posts));
+      $('#header-input').value=''; $('#post-text').value='';
+      loadPosts();
+    });
+
+    // Collab room logic
+    let activeCommittee = null;
+    function updateCollabRoom(){
+      joined = JSON.parse(localStorage.getItem(joinedKey)||'[]');
+      // if multiple joined, choose first joined as active by default
+      if(joined.length>0){
+        activeCommittee = joined[0];
+        $('#chat-hint').style.display='none';
+        $('#chat').style.display='flex';
+        loadChat(activeCommittee);
+      } else {
+        activeCommittee = null;
+        $('#chat-hint').style.display='block';
+        $('#chat').style.display='none';
+      }
+    }
+
+    updateCollabRoom();
+
+    // send chat
+    $('#send-chat').addEventListener('click', ()=>{
+      const txt = $('#chat-input').value.trim(); if(!txt) return; if(!activeCommittee) return alert('Join a committee to chat');
+      const key = 'pn_chat_' + activeCommittee;
+      const msgs = JSON.parse(localStorage.getItem(key) || '[]');
+      msgs.push({from:user.name, text:txt, ts:Date.now()});
+      localStorage.setItem(key, JSON.stringify(msgs));
+      $('#chat-input').value=''; loadChat(activeCommittee);
+    });
+
+    function loadChat(commId){
+      const key = 'pn_chat_' + commId;
+      const msgs = JSON.parse(localStorage.getItem(key) || '[]');
+      const box = $('#messages'); box.innerHTML='';
+      msgs.forEach(m=>{
+        const d = document.createElement('div'); d.className='msg' + (m.from===user.name ? ' me' : ''); d.innerHTML = `<strong style="font-size:.95rem">${m.from}</strong><div style="margin-top:6px">${m.text}</div><div class="small" style="margin-top:6px">${new Date(m.ts).toLocaleTimeString()}</div>`;
+        box.appendChild(d);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // allow switching activeCommittee by clicking on committee cards
+    commList.addEventListener('click', (e)=>{
+      const el = e.target.closest('.committee'); if(!el) return;
+      const title = el.querySelector('strong').textContent;
+      const comm = committees.find(c=>c.name===title);
+      if(!comm) return;
+      if(!joined.includes(comm.id)){ alert('Join the committee to open its collab room'); return; }
+      activeCommittee = comm.id; loadChat(activeCommittee);
+      // highlight active (visual feedback) -- simple flash
+      el.style.borderColor='rgba(108,92,231,0.35)'; setTimeout(()=>el.style.borderColor='rgba(0,0,0,0.06)',400);
+    });
+
+    // simple profile edit (modal-free inline)
+    $('#edit-profile').addEventListener('click', ()=>{
+      const newName = prompt('Your name', user.name); if(!newName) return; const newClub = prompt('Your club', user.club); if(!newClub) return;
+      user.name=newName; user.club=newClub; localStorage.setItem('pn_user', JSON.stringify(user));
+      $('#me-name').textContent=user.name; $('#side-name').textContent=user.name; $('#me-club').textContent=user.club; $('#side-role').textContent='Member — ' + user.club; // update clubs select if needed
+      if(!clubs.includes(newClub)){ clubs.push(newClub); localStorage.setItem('pn_clubs', JSON.stringify(clubs)); const opt=document.createElement('option'); opt.value=newClub; opt.textContent=newClub; $('#as-club').appendChild(opt); }
+    });
+
+    // my-posts filter
+    $('#my-posts').addEventListener('click', ()=>{
+      const posts = JSON.parse(localStorage.getItem('pn_posts') || '[]');
+      const mine = posts.filter(p=>p.userName===user.name).reverse();
+      feed.innerHTML='';
+      mine.forEach(p=>{
+        const div = document.createElement('div'); div.className='post';
+        div.innerHTML = `<div class='header'><div class='who'>${p.userName} from ${p.asClub} ${p.header}</div><div class='sub'>${new Date(p.created).toLocaleString()}</div></div><div class='content'>${p.text}</div>`;
+        feed.appendChild(div);
+      });
+    });
+
+    // joined committees list (popup simple)
+    $('#joined-committees').addEventListener('click', ()=>{
+      joined = JSON.parse(localStorage.getItem(joinedKey)||'[]');
+      alert('Joined: ' + (joined.length? joined.join(', '): 'None'));
+    });
+
+    // logout resets local user for demo
+    $('#logout').addEventListener('click', ()=>{ if(confirm('Simulate logout? (This demo stores state locally)')){ localStorage.removeItem('pn_user'); location.reload(); } });
+
+    // initial load done
+
+  </script>
+</body>
+</html>

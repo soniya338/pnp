@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Member Login/Registration Portal - POP N' PLAN</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="member.css" />
+  <script src="member.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <div class="background-bubbles"></div>
+
+  <div class="container" id="container">
+    <!-- Registration -->
+    <div class="form-container sign-up">
+      <form id="registerForm">
+        <div class="brand-badge">
+          <img src="logo.png" class="brand-logo" alt="POP N' PLAN Logo">
+          <span class="brand-text">POP N' PLAN</span>
+        </div>
+        <h1>Member Registration</h1>
+        <p class="note">Join as a member of your college/committee</p>
+
+        <input name="name" type="text" placeholder="Full Name" required />
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="contact" type="text" placeholder="Contact Number" required />
+        <input name="password" type="password" placeholder="Password" required />
+        <input name="confirmPassword" type="password" placeholder="Confirm Password" required />
+
+        <button type="submit">Register</button>
+      </form>
+    </div>
+
+    <!-- Login -->
+    <div class="form-container sign-in">
+      <form id="loginForm">
+        <div class="brand-badge">
+          <img src="logo.png" class="brand-logo" alt="POP N' PLAN Logo">
+          <span class="brand-text">POP N' PLAN</span>
+        </div>
+        <h1>Member Login</h1>
+
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="password" type="password" placeholder="Password" required />
+
+        <a href="#">Forgot your password?</a>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Already a Member?</h1>
+          <p>Login to access member features</p>
+          <button class="ghost" id="loginBtn">Login</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>New Member?</h1>
+          <p>Register to join your college committee on POP N' PLAN</p>
+          <button class="ghost" id="registerBtn">Register</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard | POP N' PLAN</title>
+  <link rel="icon" href="logo.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Saira',sans-serif; }
+    body { display:flex; background:#f0f2f5; color:#333; }
+
+    /* Sidebar */
+    .sidebar {
+      width:260px;
+      background:#fff;
+      border-right:1px solid #e0e0e0;
+      height:100vh;
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      position:fixed;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+      z-index: 1000; /* Ensure sidebar is on top */
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #5e72e4 #f0f2f5;
+    }
+    
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .sidebar::-webkit-scrollbar-track {
+      background: #f0f2f5;
+      border-radius: 3px;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb {
+      background: #5e72e4;
+      border-radius: 3px;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb:hover {
+      background: #4a54e1;
+    }
+    .logo-container {
+      display:flex; align-items:center; gap:12px;
+      margin-bottom:40px;
+      padding:10px 0;
+    }
+    .logo-container img {
+      width:40px; height:40px; object-fit:cover;
+      border-radius:10px;
+    }
+    .logo-container h2 {
+      font-size:24px;
+      background:linear-gradient(90deg,#5e72e4,#8a2be2);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      font-weight:800;
+    }
+    .menu { flex:1; }
+    .menu h4 { margin:25px 0 10px; font-size:13px; color:#a0a0a0; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+    .menu ul { list-style:none; }
+    .menu li { margin-bottom:8px; }
+    .menu a {
+      text-decoration:none; color:#555;
+      padding:12px 18px; display:flex; align-items:center; gap:15px;
+      border-radius:10px; font-weight:600; font-size:15px;
+      transition:background 0.3s, color 0.3s;
+    }
+    .menu a .material-icons { font-size:22px; color:#888; transition:color 0.3s; }
+    .menu a:hover, .menu a.active { background:#e8f0fe; color:#5e72e4; }
+    .menu a:hover .material-icons, .menu a.active .material-icons { color:#5e72e4; }
+
+    /* Main */
+    .main {
+      margin-left:260px;
+      flex:1;
+      padding:30px;
+      max-height: 100vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #5e72e4 #f0f2f5;
+    }
+    
+    .main::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .main::-webkit-scrollbar-track {
+      background: #f0f2f5;
+      border-radius: 4px;
+    }
+    
+    .main::-webkit-scrollbar-thumb {
+      background: #5e72e4;
+      border-radius: 4px;
+    }
+    
+    .main::-webkit-scrollbar-thumb:hover {
+      background: #4a54e1;
+    }
+
+    /* Header */
+    .header {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:30px;
+      background:#fff;
+      padding:15px 25px;
+      border-radius:12px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.05);
+      position: sticky; /* Make header sticky */
+      top: 10px; /* Moved navbar higher */
+      z-index: 999; /* Ensure header is on top of content */
+    }
+    .header .search-bar {
+      position:relative;
+      width:300px;
+    }
+    .header .search-bar input {
+      width:100%;
+      padding:12px 15px 12px 45px;
+      border-radius:10px; border:1px solid #e0e0e0;
+      font-size:15px;
+      color:#333;
+      transition:border-color 0.3s;
+    }
+    .header .search-bar input:focus {
+      border-color:#5e72e4;
+      outline:none;
+    }
+    .header .search-bar .material-icons {
+      position:absolute;
+      left:15px; top:50%;
+      transform:translateY(-50%);
+      color:#aaa;
+      font-size:20px;
+    }
+
+    /* Admin Profile in Header */
+    .admin-profile {
+      display:flex; align-items:center; gap:15px;
+      padding:8px 18px;
+      background:#f7f9fc;
+      border-radius:30px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+      cursor:pointer;
+      transition:background 0.3s;
+    }
+    .admin-profile:hover {
+      background:#e8f0fe;
+    }
+    .admin-profile img {
+      width:44px; height:44px;
+      border-radius:50%;
+      object-fit:cover;
+      border:2px solid #5e72e4;
+      box-shadow:0 0 0 2px rgba(94,114,228,0.3);
+    }
+    .admin-profile span {
+      font-size:16px; font-weight:700;
+      background:linear-gradient(90deg, #5e72e4, #8a2be2);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    /* Page Titles */
+    .page h1 {
+      font-size:28px;
+      color:#333;
+      margin-bottom:25px;
+      font-weight:700;
+    }
+
+    /* Cards & Stats */
+    .stats-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+      gap:25px;
+      margin-bottom:30px;
+    }
+    .stat-card {
+      background:#fff;
+      border-radius:15px;
+      padding:25px;
+      box-shadow:0 5px 20px rgba(0,0,0,0.06);
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .stat-card:hover {
+      transform:translateY(-5px);
+      box-shadow:0 8px 25px rgba(0,0,0,0.1);
+    }
+    .stat-card .icon {
+      font-size:36px;
+      color:#5e72e4;
+      margin-bottom:15px;
+      background:#e8f0fe;
+      border-radius:50%;
+      width:60px; height:60px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .stat-card h3 {
+      font-size:15px; color:#888; margin-bottom:8px; font-weight:600;
+    }
+    .stat-card p {
+      font-size:32px; font-weight:800; color:#333;
+    }
+    .stat-card.new-members p {
+        background:linear-gradient(90deg, #2dce89, #2dc9b7);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+    }
+    .stat-card.total-events p {
+        background:linear-gradient(90deg, #f5365c, #fb6340);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+    }
+    .stat-card.impressions p {
+        background:linear-gradient(90deg, #ffd600, #ff8c00);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+    }
+
+    .page { display:none; }
+    .page.active { display:block; }
+    .card {
+      background:#fff; border-radius:15px; padding:25px;
+      box-shadow:0 5px 20px rgba(0,0,0,0.06);
+      margin-bottom:25px;
+    }
+
+    /* Form Elements */
+    .card form input[type="text"],
+    .card form input[type="email"],
+    .card form input[type="date"],
+    .card form input[type="time"],
+    .card form textarea,
+    .card form select {
+      width:100%;
+      padding:12px 15px;
+      margin-bottom:15px;
+      border:1px solid #e0e0e0;
+      border-radius:8px;
+      font-size:15px;
+      color:#333;
+      transition:border-color 0.3s;
+    }
+    .card form input:focus, .card form textarea:focus, .card form select:focus {
+      border-color:#5e72e4;
+      outline:none;
+    }
+    .card form textarea { resize:vertical; min-height:100px; }
+    .btn-primary {
+      background:linear-gradient(90deg, #5e72e4, #8a2be2);
+      color:#fff;
+      padding:12px 25px;
+      border:none;
+      border-radius:8px;
+      font-size:16px;
+      font-weight:600;
+      cursor:pointer;
+      transition:opacity 0.3s ease, transform 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover {
+      opacity:0.9;
+      transform:translateY(-2px);
+    }
+    .btn-primary .material-icons { font-size:20px; }
+
+    /* Event Cards List */
+    .event-list-grid {
+        display:grid;
+        grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+        gap:20px;
+    }
+    .event-card {
+      background:#f9f9f9; border-radius:12px;
+      padding:15px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
+      border:1px solid #eee;
+      display:flex;
+      flex-direction:column;
+      transition:transform 0.3s ease;
+      position: relative; /* For delete button */
+    }
+    .event-card:hover {
+        transform:translateY(-3px);
+    }
+    .event-card img {
+      width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:12px;
+    }
+    .event-card h4 {
+        margin:0 0 8px; font-size:18px; color:#333; font-weight:700;
+        background:linear-gradient(90deg, #5e72e4, #8a2be2);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+    }
+    .event-card p { font-size:14px; color:#666; margin-bottom:5px; display:flex; align-items:center; gap:5px;}
+    .event-card small { font-size:13px; color:#888; flex-grow:1; }
+    .event-card .event-actions {
+        margin-top: 15px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    .event-card .event-actions button {
+        background: #f5365c;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: background 0.3s;
+    }
+    .event-card .event-actions button.edit-event {
+        background: #2dce89;
+    }
+    .event-card .event-actions button.edit-event:hover {
+        background: #24a46d;
+    }
+    .event-card .event-actions button:hover {
+        background: #e21c3d;
+    }
+    .event-card .event-actions button .material-icons {
+        font-size: 18px;
+    }
+
+
+    /* Member List */
+    .member-list {
+        list-style:none;
+        padding:0;
+    }
+    .member-list li {
+        display:flex;
+        align-items:center;
+        gap:15px;
+        padding:12px 0;
+        border-bottom:1px solid #eee;
+        transition: background 0.2s;
+    }
+    .member-list li:hover {
+        background: #fcfcfc;
+    }
+    .member-list li:last-child {
+        border-bottom:none;
+    }
+    .member-list li img {
+        width:40px;
+        height:40px;
+        border-radius:50%;
+        object-fit:cover;
+        border:2px solid #2dce89;
+    }
+    .member-list li span {
+        font-weight:600;
+        color:#444;
+        font-size:16px;
+    }
+    .member-list li small {
+        margin-left:auto;
+        color:#777;
+        font-size:13px;
+    }
+    .member-list .member-actions {
+        display: flex;
+        gap: 8px;
+        margin-left: auto; /* Push actions to the right */
+    }
+    .member-list .member-actions button {
+        background: #2dce89; /* Example edit button color */
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .member-list .member-actions button .material-icons {
+        font-size: 16px;
+    }
+    .member-list .member-actions button.delete {
+        background: #dc3545; /* Red for delete */
+        color: white;
+    }
+    .member-list .member-actions button:hover {
+        opacity: 0.9;
+    }
+
+    /* FullCalendar adjustments */
+    #calendar {
+        max-width: 900px;
+        margin: 0 auto;
+        padding-top: 20px;
+    }
+    .fc-event {
+        cursor: pointer;
+    }
+    .fc-event-main-frame { /* Make event text readable */
+        font-size: 14px;
+    }
+
+
+    /* WhatsApp-like Message Page */
+    .whatsapp-container {
+        display: flex;
+        height: 600px;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    /* Sidebar for contacts */
+    .contacts-sidebar {
+        width: 300px;
+        background: #f8f9fa;
+        border-right: 1px solid #e0e0e0;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .contacts-header {
+        background: #075e54;
+        color: white;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .contacts-header h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+    
+    .contacts-search {
+        padding: 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .contacts-search input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        font-size: 14px;
+        outline: none;
+    }
+    
+    .contacts-list {
+        flex: 1;
+        overflow-y: auto;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .contact-item:hover {
+        background: #e8f0fe;
+    }
+    
+    .contact-item.active {
+        background: #d1e7dd;
+    }
+    
+    .contact-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #25d366;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        margin-right: 12px;
+    }
+    
+    .contact-info {
+        flex: 1;
+    }
+    
+    .contact-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 2px;
+    }
+    
+    .contact-role {
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .contact-status {
+        font-size: 11px;
+        color: #25d366;
+        font-weight: 600;
+    }
+    
+    /* Chat area */
+    .chat-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #e5ddd5;
+        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%23ffffff" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="%23ffffff" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    }
+    
+    .chat-header {
+        background: #075e54;
+        color: white;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .chat-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: #25d366;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .chat-info {
+        flex: 1;
+    }
+    
+    .chat-name {
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+    
+    .chat-status {
+        font-size: 12px;
+        opacity: 0.8;
+    }
+    
+    .chat-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .chat-actions button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+    
+    .chat-actions button:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .messages-container {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .message-bubble {
+        max-width: 70%;
+        padding: 8px 12px;
+        border-radius: 18px;
+        position: relative;
+        word-wrap: break-word;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .message-bubble.received {
+        background: white;
+        align-self: flex-start;
+        border-bottom-left-radius: 4px;
+    }
+    
+    .message-bubble.sent {
+        background: #dcf8c6;
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+    }
+    
+    .message-text {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    
+    .message-time {
+        font-size: 11px;
+        color: #666;
+        margin-top: 4px;
+        text-align: right;
+    }
+    
+    .message-bubble.received .message-time {
+        text-align: left;
+    }
+    
+    .message-input-container {
+        background: #f0f0f0;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .message-input {
+        flex: 1;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 25px;
+        outline: none;
+        font-size: 14px;
+        background: white;
+    }
+    
+    .send-button {
+        background: #25d366;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .send-button:hover {
+        background: #128c7e;
+    }
+    
+    .send-button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo-container">
+      <img src="logo.png" alt="POP N' PLAN Logo">
+      <h2>POP N' PLAN</h2>
+    </div>
+    <div class="menu">
+      <h4>Main Menu</h4>
+      <ul>
+        <li><a href="#" class="active" data-page="overview"><span class="material-icons">dashboard</span>Overview</a></li>
+        <li><a href="#" data-page="events"><span class="material-icons">event</span>Event Management</a></li>
+        <li><a href="#" data-page="members"><span class="material-icons">group</span>Committee Members</a></li>
+        <li><a href="#" data-page="leaderboard"><span class="material-icons">leaderboard</span>Leaderboard</a></li>
+        <li><a href="#" data-page="schedule"><span class="material-icons">calendar_month</span>Schedule</a></li>
+      </ul>
+      <h4>Settings & Others</h4>
+      <ul>
+        <li><a href="#" data-page="profile"><span class="material-icons">settings</span>Profile Settings</a></li>
+        <li><a href="#" data-page="messages"><span class="material-icons">message</span>Messages</a></li>
+        <li><a href="#" data-page="spreadsheets"><span class="material-icons">cloud_download</span>Reports</a></li>
+        <li><a href="#" data-page="logout"><span class="material-icons">logout</span>Logout</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Header -->
+    <div class="header">
+      <div class="search-bar">
+        <span class="material-icons">search</span>
+        <input type="text" id="globalSearchInput" placeholder="Search events, members..." />
+      </div>
+      <div id="adminProfile" class="admin-profile">
+        <img id="adminAvatar" src="default-avatar.png" alt="Admin Avatar">
+        <span id="adminName">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Overview Page -->
+    <div id="overview" class="page active">
+      <h1>Dashboard Overview</h1>
+      <div class="stats-grid">
+        <div class="stat-card total-events">
+            <div class="icon"><span class="material-icons">event</span></div>
+            <h3>Total Events</h3>
+            <p id="totalEvents">0</p>
+        </div>
+        <div class="stat-card new-members">
+            <div class="icon"><span class="material-icons">person_add</span></div>
+            <h3>New Committee Members (30d)</h3>
+            <p id="newMembersCount">0</p>
+        </div>
+        <div class="stat-card impressions">
+            <div class="icon"><span class="material-icons">visibility</span></div>
+            <h3>Event Impressions</h3>
+            <p id="totalImpressions">0</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Upcoming Events</h2>
+        <div id="upcomingEventList" class="event-list-grid">
+          <!-- Upcoming events will be loaded here -->
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Latest Committee Members</h2>
+        <ul id="latestMembersList" class="member-list">
+            <!-- Latest members will be loaded here -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Event Management Page -->
+    <div id="events" class="page">
+      <h1>Event Management</h1>
+      <div class="card">
+        <h2>Add New Event</h2>
+        <form id="eventForm">
+          <input type="text" id="eventTitle" placeholder="Event Title" required>
+          <textarea id="eventDescription" placeholder="Event Description"></textarea>
+          <input type="date" id="eventDate" required>
+          <input type="time" id="eventTime" required>
+          <input type="text" id="eventVenue" placeholder="Venue (e.g., College Auditorium)" required>
+          <input type="text" id="eventImage" placeholder="Image URL (optional)">
+          <button type="submit" class="btn-primary"><span class="material-icons">add</span> Add Event</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>All Events</h2>
+        <div id="allEventList" class="event-list-grid">
+          <!-- All events will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Committee Members Page -->
+    <div id="members" class="page">
+        <h1>Committee Members</h1>
+        <div class="card">
+            <h2>Add New Member</h2>
+            <form id="memberForm">
+                <input type="text" id="memberName" placeholder="Member Name" required>
+                <input type="email" id="memberEmail" placeholder="Member Email" required>
+                <input type="text" id="memberRole" placeholder="Role (e.g., Organizer, Volunteer)">
+                <input type="text" id="memberAvatar" placeholder="Avatar URL (optional)">
+                <button type="submit" class="btn-primary"><span class="material-icons">person_add</span> Add Member</button>
+            </form>
+        </div>
+        <div class="card">
+            <h2>Current Members</h2>
+            <ul id="committeeMembersList" class="member-list">
+                <!-- Committee members will be loaded here -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Leaderboard Page -->
+    <div id="leaderboard" class="page">
+      <h1>Leaderboard</h1>
+      <div class="card">
+        <h2>Top Performers</h2>
+        <ul id="leaderboardList" class="member-list">
+            <!-- Leaderboard items will be loaded here -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Schedule Page -->
+    <div id="schedule" class="page">
+      <h1>Event Schedule</h1>
+      <div class="card">
+        <div id="calendar"></div>
+      </div>
+    </div>
+
+    <!-- Profile Settings Page -->
+    <div id="profile" class="page">
+      <h1>Profile Settings</h1>
+      <div class="card">
+        <form id="profileForm">
+          <label>Nickname:</label>
+          <input type="text" id="nickname">
+          <label>Contact Email:</label>
+          <input type="email" id="contact">
+          <label>Profile Picture URL:</label>
+          <input type="text" id="avatarUrl">
+          <button type="submit" class="btn-primary"><span class="material-icons">save</span> Update Profile</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Messages Page -->
+    <div id="messages" class="page">
+      <h1>Messages & Announcements</h1>
+      <div class="card">
+        <div class="whatsapp-container">
+          <!-- Contacts Sidebar -->
+          <div class="contacts-sidebar">
+            <div class="contacts-header">
+              <span class="material-icons">chat</span>
+              <h3>Messages</h3>
+              <button onclick="broadcastMessage()" style="background: none; border: none; color: white; cursor: pointer; margin-left: auto;" title="Broadcast to all members">
+                <span class="material-icons">campaign</span>
+              </button>
+            </div>
+            <div class="contacts-search">
+              <input type="text" id="contactSearch" placeholder="Search contacts...">
+            </div>
+            <div class="contacts-list" id="contactsList">
+              <!-- Contacts will be loaded here -->
+            </div>
+          </div>
+          
+          <!-- Chat Area -->
+          <div class="chat-area">
+            <div class="chat-header" id="chatHeader" style="display: none;">
+              <div class="chat-avatar" id="chatAvatar">A</div>
+              <div class="chat-info">
+                <div class="chat-name" id="chatName">Select a contact</div>
+                <div class="chat-status" id="chatStatus">Choose someone to start chatting</div>
+              </div>
+              <div class="chat-actions">
+                <button onclick="refreshMessages()"><span class="material-icons">refresh</span></button>
+                <button onclick="clearChat()"><span class="material-icons">clear</span></button>
+              </div>
+            </div>
+            
+            <div class="messages-container" id="messagesContainer">
+              <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; text-align: center;">
+                <div>
+                  <span class="material-icons" style="font-size: 48px; margin-bottom: 10px; display: block;">chat_bubble_outline</span>
+                  <p>Select a contact to start messaging</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="message-input-container" id="messageInputContainer" style="display: none;">
+              <input type="text" id="messageInput" class="message-input" placeholder="Type a message...">
+              <button id="sendMessageButton" class="send-button">
+                <span class="material-icons">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reports Page (formerly Spreadsheets) -->
+    <div id="spreadsheets" class="page">
+      <h1>Reports & Analytics</h1>
+      <div class="card">
+        <h2>Event Registrations</h2>
+        <div style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
+          <button onclick="loadRegistrations().then(() => renderRegistrationsTable())" class="btn-primary" style="background:#5e72e4;"><span class="material-icons">refresh</span> Refresh Data</button>
+          <span id="registrationCount" style="color: #666; font-weight: 600;"></span>
+        </div>
+        <div id="registrationsTable" style="overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px;">
+          <table style="width: 100%; border-collapse: collapse; background: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 13px;">
+            <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; position: sticky; top: 0; z-index: 10;">
+              <tr>
+                <th style="padding: 12px 8px; text-align: left; border-right: 1px solid rgba(255,255,255,0.2); font-weight: 600; white-space: nowrap;">Event Name</th>
+                <th style="padding: 12px 8px; text-align: left; border-right: 1px solid rgba(255,255,255,0.2); font-weight: 600; white-space: nowrap;">Registrant Name</th>
+                <th style="padding: 12px 8px; text-align: left; border-right: 1px solid rgba(255,255,255,0.2); font-weight: 600; white-space: nowrap;">Email</th>
+                <th style="padding: 12px 8px; text-align: left; border-right: 1px solid rgba(255,255,255,0.2); font-weight: 600; white-space: nowrap;">Phone</th>
+                <th style="padding: 12px 8px; text-align: left; border-right: 1px solid rgba(255,255,255,0.2); font-weight: 600; white-space: nowrap;">Class</th>
+                <th style="padding: 12px 8px; text-align: left; border-right: 1px solid rgba(255,255,255,0.2); font-weight: 600; white-space: nowrap;">Roll No</th>
+                <th style="padding: 12px 8px; text-align: left; border-right: 1px solid rgba(255,255,255,0.2); font-weight: 600; white-space: nowrap;">PRN</th>
+                <th style="padding: 12px 8px; text-align: left; border-right: 1px solid rgba(255,255,255,0.2); font-weight: 600; white-space: nowrap;">Registration Date</th>
+                <th style="padding: 12px 8px; text-align: left; border-right: 1px solid rgba(255,255,255,0.2); font-weight: 600; white-space: nowrap;">Status</th>
+                <th style="padding: 12px 8px; text-align: left; font-weight: 600; white-space: nowrap;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="registrationsTableBody">
+              <!-- Registrations will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <button onclick="exportEventsToExcel()" class="btn-primary"><span class="material-icons">download</span> Export Events to Excel</button>
+          <button onclick="exportRegistrationsToExcel()" class="btn-primary" style="background:#2dce89;"><span class="material-icons">download</span> Export Registrations to Excel</button>
+          <button onclick="exportMembersToExcel()" class="btn-primary" style="background:#ff6b6b;"><span class="material-icons">download</span> Export Members to Excel</button>
+          <button onclick="printRegistrations()" class="btn-primary" style="background:#17a2b8;"><span class="material-icons">print</span> Print Report</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Page (Placeholder) -->
+    <div id="logout" class="page">
+      <h1>Logging Out...</h1>
+      <div class="card">
+        <p>You will be securely logged out. Redirecting to login page...</p>
+      </div>
+    </div>
+
+  </div>
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales-all.min.js"></script>
+<script>
+  // --- API Configuration ---
+  const API_BASE_URL = '/api/events';
+  let events = [];
+  let registrations = [];
+
+  let mockMembers = [
+    { id: 'm1', name: 'Alice Smith', email: 'alice@popnplan.com', role: 'President', avatarUrl: 'https://i.pravatar.cc/150?img=1', createdAt: '2023-01-15T10:00:00Z' },
+    { id: 'm2', name: 'Bob Johnson', email: 'bob@popnplan.com', role: 'Treasurer', avatarUrl: 'https://i.pravatar.cc/150?img=2', createdAt: '2023-02-20T11:30:00Z' },
+    { id: 'm3', name: 'Charlie Brown', email: 'charlie@popnplan.com', role: 'Event Coordinator', avatarUrl: 'https://i.pravatar.cc/150?img=3', createdAt: '2023-03-01T09:00:00Z' },
+    { id: 'm4', name: 'Diana Prince', email: 'diana@popnplan.com', role: 'Volunteer Manager', avatarUrl: 'https://i.pravatar.cc/150?img=4', createdAt: '2023-09-01T14:00:00Z' }, // New member in last 30d (relative to a mock current date)
+    { id: 'm5', name: 'Eve Adams', email: 'eve@popnplan.com', role: 'Marketing Lead', avatarUrl: 'https://i.pravatar.cc/150?img=5', createdAt: '2023-10-10T16:00:00Z' }, // New member in last 30d
+    { id: 'm6', name: 'Frank White', email: 'frank@popnplan.com', role: 'Secretary', avatarUrl: 'https://i.pravatar.cc/150?img=6', createdAt: '2023-10-20T11:00:00Z' }, // Very new member
+  ];
+
+  let mockLeaderboard = [
+    { id: 'm1', name: 'Alice Smith', points: 1500, avatarUrl: 'https://i.pravatar.cc/150?img=1' },
+    { id: 'm3', name: 'Charlie Brown', points: 1200, avatarUrl: 'https://i.pravatar.cc/150?img=3' },
+    { id: 'm4', name: 'Diana Prince', points: 900, avatarUrl: 'https://i.pravatar.cc/150?img=4' },
+    { id: 'm2', name: 'Bob Johnson', points: 750, avatarUrl: 'https://i.pravatar.cc/150?img=2' },
+    { id: 'm5', name: 'Eve Adams', points: 600, avatarUrl: 'https://i.pravatar.cc/150?img=5' },
+    { id: 'm6', name: 'Frank White', points: 300, avatarUrl: 'https://i.pravatar.cc/150?img=6' },
+  ];
+
+
+
+      let mockMessages = [
+      { id: 'msg1', sender: 'Alice Smith', content: 'Reminder: Committee meeting tomorrow at 10 AM.', timestamp: '2023-10-25T17:00:00Z', isSent: false },
+      { id: 'msg2', sender: 'You', content: 'Got it, preparing the agenda now.', timestamp: '2023-10-25T17:05:00Z', isSent: true },
+      { id: 'msg3', sender: 'Bob Johnson', content: 'Please share the latest budget report.', timestamp: '2023-10-25T18:00:00Z', isSent: false },
+      { id: 'msg4', sender: 'You', content: 'Sure, I will upload it to the drive shortly.', timestamp: '2023-10-25T18:10:00Z', isSent: true },
+      { id: 'msg5', sender: 'Diana Prince', content: 'New volunteers have been onboarded for the outreach event.', timestamp: '2023-10-26T09:00:00Z', isSent: false },
+  ];
+
+  // Additional mock data for members (merged with existing mockMembers)
+  const additionalMockMembers = [
+    { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Member', contact: '1234567890' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'Member', contact: '0987654321' },
+    { id: '3', name: 'Mike Johnson', email: 'mike@example.com', role: 'Staff', contact: '1122334455' },
+    { id: '4', name: 'Sarah Wilson', email: 'sarah@example.com', role: 'Member', contact: '5566778899' },
+    { id: '5', name: 'David Brown', email: 'david@example.com', role: 'Staff', contact: '9988776655' }
+  ];
+
+  let currentUserProfile = {
+    nickname: 'Admin',
+    contact: 'admin@popnplan.com',
+    avatarUrl: 'https://i.pravatar.cc/150?img=8',
+    committee: 'Central Committee'
+  };
+
+  // Simulate API token and login check
+  const token = localStorage.getItem('token');
+  if (!token) {
+    // In a real app, this would redirect to a login page
+    // For this demo, we'll assume a valid token for the current user
+    localStorage.setItem('token', 'mock-admin-token');
+  }
+
+  // --- DOM Elements ---
+  const adminNameEl = document.getElementById('adminName');
+  const adminAvatarEl = document.getElementById('adminAvatar');
+  const globalSearchInput = document.getElementById('globalSearchInput');
+
+  // Overview Page Elements
+  const totalEventsEl = document.getElementById('totalEvents');
+  const newMembersCountEl = document.getElementById('newMembersCount');
+  const totalImpressionsEl = document.getElementById('totalImpressions');
+  const upcomingEventList = document.getElementById('upcomingEventList');
+  const latestMembersList = document.getElementById('latestMembersList');
+
+  // Event Management Page Elements
+  const eventForm = document.getElementById('eventForm');
+  const eventTitleInput = document.getElementById('eventTitle');
+  const eventDescriptionInput = document.getElementById('eventDescription');
+  const eventDateInput = document.getElementById('eventDate');
+  const eventTimeInput = document.getElementById('eventTime');
+  const eventVenueInput = document.getElementById('eventVenue');
+  const eventImageInput = document.getElementById('eventImage');
+  const allEventList = document.getElementById('allEventList');
+
+  // Committee Members Page Elements
+  const memberForm = document.getElementById('memberForm');
+  const memberNameInput = document.getElementById('memberName');
+  const memberEmailInput = document.getElementById('memberEmail');
+  const memberRoleInput = document.getElementById('memberRole');
+  const memberAvatarInput = document.getElementById('memberAvatar');
+  const committeeMembersList = document.getElementById('committeeMembersList');
+
+  // Leaderboard Page Elements
+  const leaderboardList = document.getElementById('leaderboardList');
+
+  // Profile Settings Page Elements
+  const profileForm = document.getElementById('profileForm');
+  const nicknameInput = document.getElementById('nickname');
+  const contactInput = document.getElementById('contact');
+  const avatarUrlInput = document.getElementById('avatarUrl');
+
+  // Messages Page Elements
+  const contactsList = document.getElementById('contactsList');
+  const contactSearch = document.getElementById('contactSearch');
+  const chatHeader = document.getElementById('chatHeader');
+  const chatAvatar = document.getElementById('chatAvatar');
+  const chatName = document.getElementById('chatName');
+  const chatStatus = document.getElementById('chatStatus');
+  const messagesContainer = document.getElementById('messagesContainer');
+  const messageInputContainer = document.getElementById('messageInputContainer');
+  const messageInput = document.getElementById('messageInput');
+  const sendMessageButton = document.getElementById('sendMessageButton');
+  
+  // Message state
+  let currentConversationId = null;
+  let conversations = [];
+  let members = [];
+
+  // --- FullCalendar Instance ---
+  let calendar; // Will be initialized when schedule page is active
+
+  // --- Utility Functions ---
+
+  // Generate a simple unique ID
+  function generateId() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  // Helper to format date/time
+  function formatDateTime(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  // --- Data Loading Functions ---
+
+  // Simulate fetching current user profile
+  async function loadAdminProfile() {
+    // In a real app: fetch("/api/auth/me", { headers: { "x-auth-token": token } })
+    // For mock:
+    return new Promise(resolve => {
+      setTimeout(() => {
+        adminNameEl.textContent = `Hi, ${currentUserProfile.nickname || currentUserProfile.committee}`;
+        adminAvatarEl.src = currentUserProfile.avatarUrl;
+        nicknameInput.value = currentUserProfile.nickname;
+        contactInput.value = currentUserProfile.contact;
+        avatarUrlInput.value = currentUserProfile.avatarUrl;
+        resolve(currentUserProfile);
+      }, 100);
+    });
+  }
+
+  // Render a single event card
+  function renderEventCard(ev) {
+      return `
+      <div class="event-card">
+        <img src="${ev.image || 'https://via.placeholder.com/400x180?text=Event+Image'}" alt="${ev.title}">
+        <h4>${ev.title}</h4>
+        <p><span class="material-icons" style="font-size:16px;vertical-align:middle;">calendar_today</span> ${new Date(ev.date).toLocaleDateString()}</p>
+        <p><span class="material-icons" style="font-size:16px;vertical-align:middle;">access_time</span> ${ev.time}</p>
+        <p><span class="material-icons" style="font-size:16px;vertical-align:middle;">location_on</span> ${ev.venue || 'TBD'}</p>
+        <small>${ev.description ? ev.description.substring(0, 100) + (ev.description.length > 100 ? '...' : '') : 'No description provided.'}</small>
+        <div class="event-actions">
+            <button class="edit-event" data-id="${ev._id}"><span class="material-icons">edit</span> Edit</button>
+            <button class="delete-event" data-id="${ev._id}"><span class="material-icons">delete</span> Delete</button>
+        </div>
+      </div>`;
+  }
+
+  // Load and render events for Overview & Event Management
+  async function loadEvents(filter = '') {
+    try {
+      const response = await fetch(API_BASE_URL);
+      if (!response.ok) throw new Error('Failed to fetch events');
+      
+      events = await response.json();
+      
+        const now = new Date();
+        const thirtyDaysLater = new Date();
+        thirtyDaysLater.setDate(now.getDate() + 30);
+
+      const filteredEvents = events.filter(ev =>
+            ev.title.toLowerCase().includes(filter.toLowerCase()) ||
+            ev.description.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        // Update total events count
+        totalEventsEl.textContent = filteredEvents.length;
+
+        // Filter for upcoming events (within the next 30 days)
+        const upcoming = filteredEvents.filter(ev => {
+            const eventDateTime = new Date(`${ev.date}T${ev.time}`);
+            return eventDateTime > now && eventDateTime <= thirtyDaysLater;
+        }).sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+
+        upcomingEventList.innerHTML = upcoming.length > 0
+            ? upcoming.map(renderEventCard).join('')
+            : '<p>No upcoming events.</p>';
+
+        allEventList.innerHTML = filteredEvents.length > 0
+            ? filteredEvents.map(renderEventCard).join('')
+            : '<p>No events added yet.</p>';
+
+        attachEventCardListeners(); // Attach listeners after rendering
+      return filteredEvents;
+    } catch (error) {
+      console.error('Error loading events:', error);
+      upcomingEventList.innerHTML = '<p>Error loading events.</p>';
+      allEventList.innerHTML = '<p>Error loading events.</p>';
+      return [];
+    }
+  }
+
+  // Attach event listeners to edit/delete buttons on event cards
+  function attachEventCardListeners() {
+      document.querySelectorAll('.edit-event').forEach(button => {
+          button.onclick = (e) => {
+              const eventId = e.currentTarget.dataset.id;
+              // In a real app, you'd fetch the event data and populate a modal/form
+              alert(`Editing event with ID: ${eventId}`);
+          };
+      });
+      document.querySelectorAll('.delete-event').forEach(button => {
+          button.onclick = async (e) => {
+              const eventId = e.currentTarget.dataset.id;
+              if (confirm(`Are you sure you want to delete this event?`)) {
+                  try {
+                      const response = await fetch(`${API_BASE_URL}/${eventId}`, {
+                          method: 'DELETE'
+                      });
+                      
+                      if (!response.ok) {
+                          const errorData = await response.json();
+                          throw new Error(errorData.error || 'Failed to delete event');
+                      }
+                      
+                      alert('Event deleted successfully!');
+                  loadEvents(globalSearchInput.value); // Reload events
+                  updateCalendar(); // Update calendar as well
+                  } catch (error) {
+                      console.error('Error deleting event:', error);
+                      alert('Error deleting event: ' + error.message);
+                  }
+              }
+          };
+      });
+  }
+
+
+  // Render a single member list item
+  function renderMemberListItem(member) {
+      return `
+      <li>
+        <img src="${member.avatarUrl || 'https://via.placeholder.com/40x40?text=M'}" alt="${member.name}">
+        <span>${member.name} - ${member.role}</span>
+        <small>Joined: ${new Date(member.createdAt).toLocaleDateString()}</small>
+        <div class="member-actions">
+            <button class="edit-member" data-id="${member.id}"><span class="material-icons">edit</span> Edit</button>
+            <button class="delete-member" data-id="${member.id}" class="delete"><span class="material-icons">delete</span> Delete</button>
+        </div>
+      </li>`;
+  }
+
+  // Load and render committee members
+  async function loadCommitteeMembers(filter = '') {
+    // In a real app: fetch('/api/admin/members', { headers: { 'x-auth-token': token } })
+    // For mock:
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const now = new Date();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+
+        const filteredMembers = mockMembers.filter(member =>
+            member.name.toLowerCase().includes(filter.toLowerCase()) ||
+            member.email.toLowerCase().includes(filter.toLowerCase()) ||
+            member.role.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        // Update new members count (joined in last 30 days)
+        newMembersCountEl.textContent = filteredMembers.filter(m => {
+            const joinedDate = new Date(m.createdAt);
+            return joinedDate > thirtyDaysAgo;
+        }).length;
+
+        // Sort members by join date (newest first)
+        const sortedMembers = [...filteredMembers].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const latestFiveMembers = sortedMembers.slice(0, 5); // Top 5 for overview
+
+        committeeMembersList.innerHTML = filteredMembers.length > 0
+            ? filteredMembers.map(renderMemberListItem).join('')
+            : '<p>No committee members found.</p>';
+
+        latestMembersList.innerHTML = latestFiveMembers.length > 0
+            ? latestFiveMembers.map(member => `
+                <li>
+                  <img src="${member.avatarUrl || 'https://via.placeholder.com/40x40?text=M'}" alt="${member.name}">
+                  <span>${member.name}</span>
+                  <small>Joined: ${new Date(member.createdAt).toLocaleDateString()}</small>
+                </li>`).join('')
+            : '<p>No new members recently.</p>';
+
+        attachMemberListItemListeners(); // Attach listeners after rendering
+        resolve(filteredMembers);
+      }, 100);
+    });
+  }
+
+  // Attach event listeners to edit/delete buttons on member list items
+  function attachMemberListItemListeners() {
+      document.querySelectorAll('.edit-member').forEach(button => {
+          button.onclick = (e) => {
+              const memberId = e.currentTarget.dataset.id;
+              // In a real app, you'd fetch the member data and populate a modal/form
+              alert(`Editing member with ID: ${memberId}`);
+          };
+      });
+      document.querySelectorAll('.delete-member').forEach(button => {
+          button.onclick = (e) => {
+              const memberId = e.currentTarget.dataset.id;
+              if (confirm(`Are you sure you want to delete member ${memberId}?`)) {
+                  // Simulate deletion
+                  mockMembers = mockMembers.filter(m => m.id !== memberId);
+                  alert('Member deleted!');
+                  loadCommitteeMembers(globalSearchInput.value); // Reload members
+                  loadLeaderboard(); // Leaderboard might change
+              }
+          };
+      });
+  }
+
+
+  // Load and render leaderboard
+  async function loadLeaderboard() {
+    // In a real app: fetch('/api/admin/leaderboard', { headers: { 'x-auth-token': token } })
+    // For mock:
+    return new Promise(resolve => {
+      setTimeout(() => {
+        // Ensure leaderboard reflects current members
+        const currentMemberIds = new Set(mockMembers.map(m => m.id));
+        const filteredLeaderboard = mockLeaderboard.filter(lb => currentMemberIds.has(lb.id));
+
+        // Sort by points (descending)
+        filteredLeaderboard.sort((a, b) => b.points - a.points);
+
+        leaderboardList.innerHTML = filteredLeaderboard.length > 0
+            ? filteredLeaderboard.map((u, i) => `<li>
+                <img src="${u.avatarUrl || 'https://via.placeholder.com/40x40?text=A'}" alt="${u.name}">
+                <span>${i+1}. ${u.name}</span>
+                <small>${u.points || 0} pts</small>
+            </li>`).join('')
+            : '<p>No leaderboard data available.</p>';
+        resolve(filteredLeaderboard);
+      }, 100);
+    });
+  }
+
+  // Load members for messaging
+  async function loadMembers() {
+    try {
+      const response = await fetch('/api/member');
+      if (response.ok) {
+        members = await response.json();
+      } else {
+        // Fallback to mock data
+        members = [...mockMembers, ...additionalMockMembers];
+      }
+      renderContacts();
+    } catch (error) {
+      console.error('Error loading members:', error);
+      members = [...mockMembers, ...additionalMockMembers];
+      renderContacts();
+    }
+  }
+
+  // Load conversations
+  async function loadConversations() {
+    try {
+      const response = await fetch('/api/messages/conversations');
+      if (response.ok) {
+        conversations = await response.json();
+        renderContacts();
+      }
+    } catch (error) {
+      console.error('Error loading conversations:', error);
+    }
+  }
+
+  // Render contacts list
+  function renderContacts() {
+    if (!contactsList) return;
+    
+    const searchTerm = contactSearch ? contactSearch.value.toLowerCase() : '';
+    const filteredMembers = members.filter(member => 
+      member.name.toLowerCase().includes(searchTerm) ||
+      member.email.toLowerCase().includes(searchTerm)
+    );
+
+    contactsList.innerHTML = filteredMembers.map(member => {
+      const conversation = conversations.find(conv => conv._id === member.id);
+      const unreadCount = conversation ? conversation.unreadCount : 0;
+      const lastMessage = conversation ? conversation.lastMessage : null;
+      
+      return `
+        <div class="contact-item" onclick="selectContact('${member.id}', '${member.name}', '${member.role}')">
+          <div class="contact-avatar">${member.name.charAt(0).toUpperCase()}</div>
+          <div class="contact-info">
+            <div class="contact-name">${member.name}</div>
+            <div class="contact-role">${member.role}</div>
+            ${lastMessage ? `<div style="font-size: 11px; color: #666; margin-top: 2px;">${lastMessage.content.substring(0, 30)}${lastMessage.content.length > 30 ? '...' : ''}</div>` : ''}
+          </div>
+          ${unreadCount > 0 ? `<div class="contact-status">${unreadCount}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Select contact and load conversation
+  async function selectContact(memberId, memberName, memberRole) {
+    currentConversationId = memberId;
+    
+    // Update chat header
+    chatName.textContent = memberName;
+    chatStatus.textContent = `${memberRole} • Online`;
+    chatAvatar.textContent = memberName.charAt(0).toUpperCase();
+    
+    // Show chat interface
+    chatHeader.style.display = 'flex';
+    messageInputContainer.style.display = 'flex';
+    
+    // Load messages
+    await loadMessages(memberId);
+    
+    // Mark messages as read
+    await markMessagesAsRead(memberId);
+    
+    // Update contact selection
+    document.querySelectorAll('.contact-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+  }
+
+  // Load messages for a conversation
+  async function loadMessages(memberId) {
+    try {
+      const response = await fetch(`/api/messages/conversation/${memberId}`);
+      if (response.ok) {
+        const messages = await response.json();
+        renderMessages(messages);
+      } else {
+        // Show empty state
+        messagesContainer.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; text-align: center;">
+            <div>
+              <span class="material-icons" style="font-size: 48px; margin-bottom: 10px; display: block;">chat_bubble_outline</span>
+              <p>No messages yet. Start the conversation!</p>
+            </div>
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
+  }
+
+  // Render messages
+  function renderMessages(messages) {
+    if (messages.length === 0) {
+      messagesContainer.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; text-align: center;">
+          <div>
+            <span class="material-icons" style="font-size: 48px; margin-bottom: 10px; display: block;">chat_bubble_outline</span>
+            <p>No messages yet. Start the conversation!</p>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    messagesContainer.innerHTML = messages.map(msg => `
+      <div class="message-bubble ${msg.senderId === 'admin' ? 'sent' : 'received'}">
+        <div class="message-text">${msg.content}</div>
+        <div class="message-time">${new Date(msg.createdAt).toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        })}</div>
+                </div>
+            `).join('');
+
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  // Send message
+  async function sendMessage() {
+    const content = messageInput.value.trim();
+    if (!content || !currentConversationId) return;
+
+    try {
+      const response = await fetch('/api/messages/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          receiverId: currentConversationId,
+          content: content
+        })
+      });
+
+      if (response.ok) {
+        messageInput.value = '';
+        // Reload messages
+        await loadMessages(currentConversationId);
+        // Reload conversations to update last message
+        await loadConversations();
+      } else {
+        alert('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Error sending message');
+    }
+  }
+
+  // Mark messages as read
+  async function markMessagesAsRead(memberId) {
+    try {
+      await fetch(`/api/messages/read/${memberId}`, {
+        method: 'PUT'
+      });
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
+    }
+  }
+
+  // Broadcast message to all members
+  async function broadcastMessage() {
+    const content = prompt('Enter broadcast message:');
+    if (!content) return;
+
+    try {
+      const response = await fetch('/api/messages/broadcast', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: content,
+          messageType: 'announcement'
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(`Broadcast sent to ${result.sentTo} members`);
+        await loadConversations();
+      } else {
+        alert('Failed to send broadcast');
+      }
+    } catch (error) {
+      console.error('Error broadcasting message:', error);
+      alert('Error sending broadcast');
+    }
+  }
+
+  // Refresh messages
+  function refreshMessages() {
+    if (currentConversationId) {
+      loadMessages(currentConversationId);
+    }
+  }
+
+  // Clear chat
+  function clearChat() {
+    if (confirm('Are you sure you want to clear this chat?')) {
+      messagesContainer.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; text-align: center;">
+          <div>
+            <span class="material-icons" style="font-size: 48px; margin-bottom: 10px; display: block;">chat_bubble_outline</span>
+            <p>Chat cleared</p>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // Load registrations for reports
+  async function loadRegistrations() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin/all-registrations`);
+      if (!response.ok) throw new Error('Failed to fetch registrations');
+      
+      registrations = await response.json();
+      return registrations;
+    } catch (error) {
+      console.error('Error loading registrations:', error);
+      return [];
+    }
+  }
+
+  // Render registrations table
+  function renderRegistrationsTable() {
+    const tbody = document.getElementById('registrationsTableBody');
+    const countEl = document.getElementById('registrationCount');
+    
+    if (!tbody) return;
+
+    if (registrations.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 40px; color: #666; font-style: italic;">No registrations found</td></tr>';
+      if (countEl) countEl.textContent = 'Total Registrations: 0';
+      return;
+    }
+
+    // Update count
+    if (countEl) countEl.textContent = `Total Registrations: ${registrations.length}`;
+
+    tbody.innerHTML = registrations.map((reg, index) => `
+      <tr style="border-bottom: 1px solid #e9ecef; transition: background-color 0.2s; ${index % 2 === 0 ? 'background-color: #f8f9fa;' : 'background-color: white;'}">
+        <td style="padding: 10px 8px; border-right: 1px solid #e9ecef; font-weight: 600; color: #495057;">${reg.eventTitle}</td>
+        <td style="padding: 10px 8px; border-right: 1px solid #e9ecef; color: #212529;">${reg.registrantName}</td>
+        <td style="padding: 10px 8px; border-right: 1px solid #e9ecef; color: #007bff; text-decoration: underline;">${reg.registrantEmail}</td>
+        <td style="padding: 10px 8px; border-right: 1px solid #e9ecef; color: #495057;">${reg.registrantPhone}</td>
+        <td style="padding: 10px 8px; border-right: 1px solid #e9ecef; color: #495057;">${reg.registrantClass}</td>
+        <td style="padding: 10px 8px; border-right: 1px solid #e9ecef; color: #495057; font-weight: 600;">${reg.registrantRollNo}</td>
+        <td style="padding: 10px 8px; border-right: 1px solid #e9ecef; color: #495057; font-weight: 600;">${reg.registrantPRN}</td>
+        <td style="padding: 10px 8px; border-right: 1px solid #e9ecef; color: #6c757d; font-size: 12px;">${new Date(reg.registrationDate).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        })}</td>
+        <td style="padding: 10px 8px; border-right: 1px solid #e9ecef;">
+          <span style="padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            background: ${reg.status === 'approved' ? '#d4edda' : reg.status === 'rejected' ? '#f8d7da' : '#fff3cd'};
+            color: ${reg.status === 'approved' ? '#155724' : reg.status === 'rejected' ? '#721c24' : '#856404'};
+            border: 1px solid ${reg.status === 'approved' ? '#c3e6cb' : reg.status === 'rejected' ? '#f5c6cb' : '#ffeaa7'};">
+            ${reg.status}
+          </span>
+        </td>
+        <td style="padding: 10px 8px;">
+          <button onclick="updateRegistrationStatus('${reg._id}', 'approved')" style="background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; margin-right: 4px; cursor: pointer;">Approve</button>
+          <button onclick="updateRegistrationStatus('${reg._id}', 'rejected')" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">Reject</button>
+        </td>
+      </tr>
+    `).join('');
+
+    // Add hover effect
+    tbody.querySelectorAll('tr').forEach(row => {
+      row.addEventListener('mouseenter', () => {
+        row.style.backgroundColor = '#e3f2fd';
+      });
+      row.addEventListener('mouseleave', () => {
+        const index = Array.from(tbody.children).indexOf(row);
+        row.style.backgroundColor = index % 2 === 0 ? '#f8f9fa' : 'white';
+      });
+    });
+  }
+
+  // Simulate total impressions
+  async function loadTotalImpressions() {
+      // In a real app, this would fetch from an analytics service
+      // For now, let's use a mock value
+      totalImpressionsEl.textContent = (Math.floor(Math.random() * 5000) + 1000).toLocaleString();
+  }
+
+  // --- Event Handlers ---
+
+  // Sidebar navigation
+  const links = document.querySelectorAll('.menu a');
+  const pages = document.querySelectorAll('.page');
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const targetPageId = link.getAttribute('data-page');
+
+      if (targetPageId === 'logout') {
+          localStorage.removeItem('token');
+          alert("You have been logged out!");
+          // In a real app: window.location.href = "login.html";
+          return;
+      }
+
+      // Remove active class from all links and pages
+      links.forEach(l => l.classList.remove('active'));
+      pages.forEach(p => p.classList.remove('active'));
+      
+      // Add active class to clicked link
+      link.classList.add('active');
+      
+      // Show the target page
+      const targetPage = document.getElementById(targetPageId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      // Load data and setup for the newly active page
+      switch (targetPageId) {
+          case 'overview':
+              loadEvents(globalSearchInput.value);
+              loadCommitteeMembers(''); // No filter for latest members section
+              loadTotalImpressions();
+              break;
+          case 'events':
+              loadEvents(globalSearchInput.value);
+              break;
+          case 'members':
+              loadCommitteeMembers(globalSearchInput.value);
+              break;
+          case 'leaderboard':
+              loadLeaderboard();
+              break;
+          case 'schedule':
+              initializeCalendar();
+              break;
+          case 'profile':
+              loadAdminProfile(); // Reload profile details for form
+              break;
+          case 'messages':
+              loadMembers();
+              loadConversations();
+              break;
+          case 'spreadsheets':
+              loadRegistrations().then(() => renderRegistrationsTable());
+              break;
+      }
+    });
+  });
+
+  // Event Form Submission
+  if (eventForm) {
+    eventForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+      const newEvent = {
+        title: eventTitleInput.value,
+        description: eventDescriptionInput.value,
+        date: eventDateInput.value,
+        time: eventTimeInput.value,
+          venue: eventVenueInput.value,
+        image: eventImageInput.value,
+          createdBy: 'admin' // In production, get from JWT token
+        };
+
+        const response = await fetch(API_BASE_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newEvent)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to create event');
+        }
+
+        const result = await response.json();
+      eventForm.reset();
+      alert("Event added successfully!");
+      loadEvents(globalSearchInput.value); // Reload for overview and events page
+      updateCalendar(); // Update calendar
+      } catch (error) {
+        console.error('Error creating event:', error);
+        alert('Error creating event: ' + error.message);
+      }
+    });
+  }
+
+  // Member Form Submission
+  if (memberForm) {
+    memberForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newMember = {
+        id: generateId(),
+        name: memberNameInput.value,
+        email: memberEmailInput.value,
+        role: memberRoleInput.value,
+        avatarUrl: memberAvatarInput.value,
+        createdAt: new Date().toISOString()
+      };
+      // In a real app: fetch('/api/admin/member', { method: 'POST', body: JSON.stringify(newMember) ... })
+      // For mock:
+      mockMembers.push(newMember);
+      // Also add to leaderboard with default points
+      mockLeaderboard.push({ id: newMember.id, name: newMember.name, points: 100, avatarUrl: newMember.avatarUrl });
+      memberForm.reset();
+      alert("Member added successfully!");
+      loadCommitteeMembers(globalSearchInput.value); // Reload for members page and overview
+      loadLeaderboard(); // Update leaderboard
+    });
+  }
+
+  // Profile Form Submission
+  if (profileForm) {
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      currentUserProfile.nickname = nicknameInput.value;
+      currentUserProfile.contact = contactInput.value;
+      currentUserProfile.avatarUrl = avatarUrlInput.value;
+      // In a real app: fetch('/api/admin/profile', { method: 'PUT', body: JSON.stringify(currentUserProfile) ... })
+      // For mock:
+      alert("Profile updated!");
+      loadAdminProfile(); // Refresh header and form
+    });
+  }
+
+  // Message Sending
+  if (sendMessageButton) {
+      sendMessageButton.addEventListener('click', () => {
+          const content = messageInput.value.trim();
+          if (content) {
+              const newMessage = {
+                  id: generateId(),
+                  sender: currentUserProfile.nickname || 'You', // Assuming admin sends messages
+                  content: content,
+                  timestamp: new Date().toISOString(),
+                  isSent: true
+              };
+              mockMessages.push(newMessage);
+              messageInput.value = '';
+              loadMessages(); // Refresh message list
+          }
+      });
+      messageInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+              sendMessageButton.click();
+          }
+      });
+  }
+  if (contactSearch) {
+      contactSearch.addEventListener('input', renderContacts);
+  }
+
+  // --- Search Functionality ---
+  globalSearchInput.addEventListener('input', debounce(() => {
+    const query = globalSearchInput.value;
+    const activePage = document.querySelector('.page.active').id;
+
+    if (activePage === 'events') {
+        loadEvents(query);
+    } else if (activePage === 'members') {
+        loadCommitteeMembers(query);
+    } else if (activePage === 'overview') {
+        // For overview, apply search to both upcoming events and latest members
+        loadEvents(query);
+        loadCommitteeMembers(query);
+    }
+    // You could expand this to search other pages too
+  }, 300)); // Debounce to prevent too many re-renders
+
+
+  // Debounce function
+  function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
+
+  // --- Calendar Functionality (FullCalendar.js) ---
+  function initializeCalendar() {
+    const calendarEl = document.getElementById('calendar');
+    if (!calendarEl) return;
+
+    if (calendar) { // If calendar already exists, destroy it before re-initializing
+        calendar.destroy();
+    }
+
+    calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      events: events.map(event => ({
+          id: event._id,
+          title: event.title,
+          start: `${event.date}T${event.time}`,
+          description: event.description,
+          // You can add more properties like color based on event type
+          backgroundColor: '#5e72e4', // A nice blue for events
+          borderColor: '#5e72e4'
+      })),
+      eventDidMount: function(info) {
+        // Add a tooltip or custom styling on mount if needed
+      },
+      eventClick: function(info) {
+        alert(`Event: ${info.event.title}\nDate: ${new Date(info.event.start).toLocaleString()}\nDescription: ${info.event.extendedProps.description || 'No description'}`);
+      }
+    });
+    calendar.render();
+  }
+
+  function updateCalendar() {
+      if (calendar) {
+          calendar.setOption('events', events.map(event => ({
+              id: event._id,
+              title: event.title,
+              start: `${event.date}T${event.time}`,
+              description: event.description,
+              backgroundColor: '#5e72e4',
+              borderColor: '#5e72e4'
+          })));
+      }
+  }
+
+
+  // --- Export to Excel Functionality ---
+  function convertToCSV(arr) {
+    const array = [Object.keys(arr[0])].concat(arr);
+    return array.map(it => {
+      return Object.values(it).toString();
+    }).join('\n');
+  }
+
+  function downloadCSV(csv, filename) {
+    const csvFile = new Blob([csv], { type: "text/csv" });
+    const downloadLink = document.createElement("a");
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
+  function exportEventsToExcel() {
+    if (events.length === 0) {
+        alert("No events to export!");
+        return;
+    }
+    const eventsToExport = events.map(event => ({
+        ID: event._id,
+        Title: event.title,
+        Description: event.description,
+        Date: new Date(event.date).toLocaleDateString(),
+        Time: event.time,
+        Venue: event.venue || 'TBD',
+        MaxParticipants: event.maxParticipants,
+        ImageUrl: event.image
+    }));
+    const csv = convertToCSV(eventsToExport);
+    downloadCSV(csv, "popnplan_events.csv");
+  }
+
+  function exportMembersToExcel() {
+    if (mockMembers.length === 0) {
+        alert("No members to export!");
+        return;
+    }
+    const membersToExport = mockMembers.map(member => ({
+        ID: member.id,
+        Name: member.name,
+        Email: member.email,
+        Role: member.role,
+        JoinedDate: new Date(member.createdAt).toLocaleDateString(),
+        AvatarUrl: member.avatarUrl
+    }));
+    const csv = convertToCSV(membersToExport);
+    downloadCSV(csv, "popnplan_members.csv");
+  }
+
+  function exportRegistrationsToExcel() {
+    if (registrations.length === 0) {
+        alert("No registrations to export!");
+        return;
+    }
+    const registrationsToExport = registrations.map(reg => ({
+        EventName: reg.eventTitle,
+        RegistrantName: reg.registrantName,
+        Email: reg.registrantEmail,
+        Phone: reg.registrantPhone,
+        Class: reg.registrantClass,
+        RollNo: reg.registrantRollNo,
+        PRN: reg.registrantPRN,
+        RegistrationDate: new Date(reg.registrationDate).toLocaleDateString(),
+        Status: reg.status
+    }));
+    const csv = convertToCSV(registrationsToExport);
+    downloadCSV(csv, "popnplan_registrations.csv");
+  }
+
+  // Update registration status
+  async function updateRegistrationStatus(registrationId, status) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/registrations/${registrationId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: status })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update status');
+      }
+
+      alert(`Registration ${status} successfully!`);
+      // Reload registrations
+      await loadRegistrations();
+      renderRegistrationsTable();
+    } catch (error) {
+      console.error('Error updating registration status:', error);
+      alert('Error updating status: ' + error.message);
+    }
+  }
+
+  // Print registrations
+  function printRegistrations() {
+    const printWindow = window.open('', '_blank');
+    const table = document.getElementById('registrationsTable').innerHTML;
+    
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Event Registrations Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; }
+            .no-data { text-align: center; padding: 40px; color: #666; }
+            @media print { body { margin: 0; } }
+          </style>
+        </head>
+        <body>
+          <h1>Event Registrations Report</h1>
+          <p>Generated on: ${new Date().toLocaleString()}</p>
+          <p>Total Registrations: ${registrations.length}</p>
+          ${table}
+        </body>
+      </html>
+    `);
+    
+    printWindow.document.close();
+    printWindow.print();
+  }
+
+
+  // --- Initial Page Load ---
+  // Load necessary data when the dashboard loads
+  document.addEventListener('DOMContentLoaded', () => {
+    loadAdminProfile();
+    loadEvents(globalSearchInput.value); // Load initial events for overview
+    loadCommitteeMembers(''); // Load initial members for overview
+    loadTotalImpressions();
+    // No need to initialize calendar here, it's done when 'schedule' page is clicked.
+  });
+</script>
+</body>
+</html>

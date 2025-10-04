@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/index.js"
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin.html"
+    },
+    {
+      "src": "/dash",
+      "dest": "/dash.html"
+    },
+    {
+      "src": "/member",
+      "dest": "/member.html"
+    },
+    {
+      "src": "/event",
+      "dest": "/event.html"
+    },
+    {
+      "src": "/plans",
+      "dest": "/plans.html"
+    },
+    {
+      "src": "/sett",
+      "dest": "/sett.html"
+    },
+    {
+      "src": "/verfication",
+      "dest": "/verfication.html"
+    },
+    {
+      "src": "/laptop",
+      "dest": "/laptop.html"
+    },
+    {
+      "src": "/regi",
+      "dest": "/regi.html"
+    },
+    {
+      "src": "/(.*\\.(html|css|js|png|jpg|jpeg|gif|svg|ico))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/login.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
